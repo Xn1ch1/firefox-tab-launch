@@ -1,0 +1,20 @@
+# Files to exclude from production build
+.idea/
+node_modules/
+*.log
+*.swp
+*.swo
+*~
+.DS_Store
+.git
+.gitignore
+composer.json
+.eslintrc
+.prettierrc
+*.md
+!LICENSE
+PRODUCTION_README.md
+PRODUCTION_CHECKLIST.md
+TROUBLESHOOTING.md
+CONVERSION_SUMMARY.md
+

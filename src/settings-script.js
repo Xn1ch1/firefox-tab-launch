@@ -85,7 +85,6 @@ function getBuilderData() {
 const updatePreviewFromBuilder = debounce(() => {
     try {
         const data = getBuilderData();
-        // Render into modal area if present
         if (previewModalArea) {
             renderLinksInto(previewModalArea, data);
         }
@@ -119,7 +118,6 @@ function previewEscHandler(e) {
 if (openPreviewBtn) openPreviewBtn.addEventListener('click', openPreviewModal);
 if (previewCloseBtn) previewCloseBtn.addEventListener('click', closePreviewModal);
 if (previewModal) previewModal.addEventListener('click', (e) => {
-    // close when clicking backdrop
     if (e.target && e.target.classList && e.target.classList.contains('modal-backdrop')) {
         closePreviewModal();
     }
@@ -136,7 +134,6 @@ async function loadSettings() {
         jsonInput.value = formatJSON(json);
     }
 
-    // Populate builder initially from stored JSON if any
     try {
         populateBuilderFromJSON(json || getDefaultLinksExample());
     } catch (err) {
@@ -152,12 +149,10 @@ function applySelectedTheme(themeMode) {
 
 settingsForm.addEventListener('submit', async (event) => {
     event.preventDefault();
-    // If builder is active, serialize it to JSON first
     let json;
     if (currentView === 'builder') {
         const serialized = serializeBuilderToJSON();
         if (!serialized) {
-            // serializeBuilder shows validation alert
             return;
         }
         json = serialized;
@@ -191,7 +186,6 @@ settingsForm.addEventListener('submit', async (event) => {
 loadExampleBtn.addEventListener('click', () => {
     jsonInput.value = formatJSON(getDefaultLinksExample());
     showAlert('Example configuration loaded', 'success');
-    // Update builder too if visible
     if (currentView === 'builder') {
         populateBuilderFromJSON(getDefaultLinksExample());
     }
@@ -200,7 +194,6 @@ loadExampleBtn.addEventListener('click', () => {
 // Toggle view handlers
 function switchToBuilder() {
     if (currentView === 'builder') return;
-    // populate builder from JSON
     try {
         populateBuilderFromJSON(jsonInput.value || getDefaultLinksExample());
     } catch (err) {
@@ -218,9 +211,8 @@ function switchToBuilder() {
 
 function switchToJSON() {
     if (currentView === 'json') return;
-    // serialize builder to JSON
     const serialized = serializeBuilderToJSON();
-    if (!serialized) return; // validation error already shown
+    if (!serialized) return;
     jsonInput.value = formatJSON(serialized);
     builderContainer.style.display = 'none';
     jsonContainer.style.display = 'block';
@@ -242,16 +234,13 @@ function createInput(placeholder, value = '', type = 'text') {
     const input = document.createElement('input');
     input.type = type;
     if (type === 'color') {
-        // color inputs don't support placeholders. If no value provided, mark as empty
         if (value) {
             input.value = value;
             input.dataset.empty = 'false';
         } else {
-            // set a default internal value but mark as empty so we don't serialize unless changed
             input.value = '#000000';
             input.dataset.empty = 'true';
         }
-        // when user interacts, mark as explicitly set
         input.addEventListener('input', () => {
             input.dataset.empty = 'false';
             input.classList.remove('color-empty');
@@ -270,25 +259,21 @@ const ICON_OPTIONS = [
     'home','search','settings','favorite','star','link','visibility','visibility_off','account_circle','person','people','shopping_cart','calendar_today','event','info','warning','error','check_circle','close','logout','login','cloud','cloud_upload','cloud_download','download','upload','save','edit','delete','add','remove','share','more_vert','more_horiz','menu','arrow_back','arrow_forward','refresh','loop','build','developer_mode','bug_report','fingerprint','lock','lock_open','security','language','public','translate','phone','email','chat_bubble','comment','videocam','camera_alt','play_arrow','pause','stop','volume_up','volume_off','mic','mic_off','map','place','location_on','directions','navigation','train','flight','hotel','directions_car','directions_bike','directions_walk','bicycle','fitness_center','spa','palette','brush','image','photo','brightness_4','brightness_7','contrast','toggle_on','toggle_off','battery_full','battery_std','battery_charging_full','wifi','signal_wifi_4_bar','list','view_list','grid_view','apps','dashboard','timeline','schedule','alarm','timer','stopwatch','access_time','payment','attach_money','shopping_bag','local_offer','local_grocery_store','restaurant','local_cafe'
 ];
 
-let FULL_ICON_OPTIONS = null; // cached full list when loaded
+let FULL_ICON_OPTIONS = null;
 
 async function loadFullMaterialIcons() {
     if (FULL_ICON_OPTIONS) return FULL_ICON_OPTIONS;
     try {
-        // Raw codepoints file from google/material-design-icons repo lists icon names
         const url = 'https://raw.githubusercontent.com/google/material-design-icons/master/iconfont/codepoints';
         const res = await fetch(url);
         if (!res.ok) throw new Error(`Failed to fetch icons: ${res.status}`);
         const txt = await res.text();
-        // each line like: icon_name codepoint
         const names = txt.split(/\r?\n/).map(line => line.split(/\s+/)[0]).filter(Boolean);
-        // merge unique, preferring curated ICON_OPTIONS first
         const set = new Set(ICON_OPTIONS.concat(names));
         FULL_ICON_OPTIONS = Array.from(set);
         return FULL_ICON_OPTIONS;
     } catch (err) {
         console.error('Failed to load full icon index:', err);
-        // fallback to curated list
         FULL_ICON_OPTIONS = ICON_OPTIONS.slice();
         return FULL_ICON_OPTIONS;
     }
@@ -320,7 +305,6 @@ function createIconPicker(selected = '', isCategory = false) {
     const panel = document.createElement('div');
     panel.className = 'icon-picker-panel';
     panel.style.display = 'none';
-    // we'll append the panel to document.body when opened to avoid clipping
 
     const search = document.createElement('input');
     search.type = 'search';
@@ -330,9 +314,6 @@ function createIconPicker(selected = '', isCategory = false) {
 
     const list = document.createElement('div');
     list.className = 'icon-picker-list';
-
-    // populate will include a "clear" option first, then the curated set;
-    // the full list will be loaded on demand when opening
 
     function addIconOption(name) {
         const item = document.createElement('button');
@@ -361,7 +342,6 @@ function createIconPicker(selected = '', isCategory = false) {
         });
     }
 
-    // special "clear" option to unset the icon selection
     function addClearOption() {
         const item = document.createElement('button');
         item.type = 'button';
@@ -377,7 +357,6 @@ function createIconPicker(selected = '', isCategory = false) {
 
         item.addEventListener('click', () => {
             wrapper.dataset.value = '';
-            // restore default glyph/label for empty selection
             glyph.textContent = isCategory ? 'folder' : 'open_in_new';
             label.textContent = isCategory ? 'Default icon' : 'None';
             closePanel();
@@ -385,7 +364,6 @@ function createIconPicker(selected = '', isCategory = false) {
         });
     }
 
-    // initial population: clear option first, then curated icons
     addClearOption();
     ICON_OPTIONS.forEach((name) => addIconOption(name));
 
@@ -401,25 +379,21 @@ function createIconPicker(selected = '', isCategory = false) {
     wrapper.appendChild(panel);
 
     function openPanel() {
-        // append panel to body if not already
+
         if (!document.body.contains(panel)) {
             document.body.appendChild(panel);
         }
 
         panel.style.display = 'block';
         panel.style.position = 'fixed';
-        panel.style.visibility = 'hidden'; // hide while computing position
+        panel.style.visibility = 'hidden';
 
-        // prevent body scroll while picker is open
         document.body.classList.add('no-scroll');
 
-        // compute position relative to button
         const rect = button.getBoundingClientRect();
-        // allow the panel to render off-screen to get dimensions
         panel.style.left = '0px';
         panel.style.top = '0px';
 
-        // force layout to measure
         const panelRect = panel.getBoundingClientRect();
         const panelW = panelRect.width || 300;
         const panelH = panelRect.height || 300;
@@ -433,7 +407,6 @@ function createIconPicker(selected = '', isCategory = false) {
             left = Math.max(8, viewportW - panelW - 8);
         }
         if (top + panelH > viewportH - 8) {
-            // place above the button if not enough space below
             top = rect.top - panelH - 8;
             if (top < 8) top = 8;
         }
@@ -445,7 +418,6 @@ function createIconPicker(selected = '', isCategory = false) {
         search.focus();
         document.addEventListener('click', outsideClick);
 
-        // if full list not loaded yet, load it asynchronously
         if (!FULL_ICON_OPTIONS) {
             const loading = document.createElement('div');
             loading.className = 'icon-loading';
@@ -465,7 +437,6 @@ function createIconPicker(selected = '', isCategory = false) {
         }
         panel.style.display = 'none';
         document.removeEventListener('click', outsideClick);
-        // restore body scroll
         document.body.classList.remove('no-scroll');
     }
     function outsideClick(e) {
@@ -485,7 +456,6 @@ function createIconPicker(selected = '', isCategory = false) {
         });
     });
 
-    // initialize glyph/label if selected
     if (selected) {
         glyph.textContent = selected;
         label.textContent = selected;
@@ -493,9 +463,6 @@ function createIconPicker(selected = '', isCategory = false) {
 
     return wrapper;
 }
-
-// color modal code removed — using per-category inline clear buttons instead
-
 
 function createLinkElement(linkData = {}) {
     const wrapper = document.createElement('div');
@@ -535,7 +502,6 @@ function createLinkElement(linkData = {}) {
     });
     del.addEventListener('click', () => wrapper.remove());
 
-    // update preview on input changes
     [title, url, description].forEach((inp) => inp.addEventListener('input', updatePreviewFromBuilder));
     if (icon && icon.addEventListener) icon.addEventListener('change', updatePreviewFromBuilder);
 
@@ -553,7 +519,6 @@ function createCategoryElement(category = {}) {
     const icon = createIconPicker(category.icon || '', true);
     const color = createInput('color (optional, hex)', category.color || '', 'color');
 
-    // mark dataset empty state based on initial category data
     if (category.color) {
         color.dataset.empty = 'false';
     } else {
@@ -561,7 +526,6 @@ function createCategoryElement(category = {}) {
         color.classList.add('color-empty');
     }
 
-    // when user picks a color, mark as set and show per-category clear button
     color.addEventListener('input', () => {
         color.dataset.empty = 'false';
         color.classList.remove('color-empty');
@@ -569,20 +533,17 @@ function createCategoryElement(category = {}) {
         updatePreviewFromBuilder();
     });
 
-    // Restore per-category inline clear button (replaces shared modal Clear)
     const colorClearBtn = document.createElement('button');
     colorClearBtn.type = 'button';
     colorClearBtn.className = 'color-clear-btn';
     colorClearBtn.title = 'Clear color';
     colorClearBtn.textContent = '✕';
-    // show/hide initial state
     colorClearBtn.style.display = (color.dataset && color.dataset.empty === 'true') ? 'none' : 'inline-block';
     colorClearBtn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
         color.dataset.empty = 'true';
         color.classList.add('color-empty');
-        // keep underlying value but visually treated as empty
         colorClearBtn.style.display = 'none';
         updatePreviewFromBuilder();
     });
@@ -600,7 +561,6 @@ function createCategoryElement(category = {}) {
     const colorWrap = document.createElement('div');
     colorWrap.className = 'color-wrap';
     colorWrap.appendChild(color);
-    // append the per-category clear button inside the wrap
     colorWrap.appendChild(colorClearBtn);
     header.appendChild(colorWrap);
     header.appendChild(catControls);
@@ -612,7 +572,6 @@ function createCategoryElement(category = {}) {
         linksContainer.appendChild(createLinkElement(ln));
     });
 
-    // Add link button placed below the links list
     const addLinkBtn = document.createElement('button');
     addLinkBtn.type = 'button';
     addLinkBtn.textContent = 'Add link';
@@ -620,7 +579,6 @@ function createCategoryElement(category = {}) {
     addLinkBtn.addEventListener('click', () => {
         linksContainer.appendChild(createLinkElement());
         updatePreviewFromBuilder();
-        // focus the newly added link title input
         const last = linksContainer.lastElementChild;
         if (last) {
             const input = last.querySelector('input');
@@ -628,7 +586,6 @@ function createCategoryElement(category = {}) {
         }
     });
 
-    // update preview when category fields change
     [title, /* icon select handled below */, color].forEach((inp) => inp.addEventListener('input', updatePreviewFromBuilder));
     if (icon && icon.addEventListener) icon.addEventListener('change', updatePreviewFromBuilder);
 
@@ -666,7 +623,6 @@ function populateBuilderFromJSON(jsonString) {
     parsed.forEach((cat) => {
         categoriesList.appendChild(createCategoryElement(cat));
     });
-    // Update preview after populating
     updatePreviewFromBuilder();
 }
 
@@ -706,7 +662,6 @@ function serializeBuilderToJSON() {
     });
 
     const jsonString = JSON.stringify(cats, null, 2);
-    // Validate using existing validator
     const validation = validateLinksJSON(jsonString);
     if (!validation.valid) {
         showAlert(`Validation error: ${validation.error}`, 'error');
