@@ -1,5 +1,3 @@
-/* Render links into a provided container. This mirrors the new tab renderer so
-   the settings preview looks identical to the new tab. */
 function renderLinksInto(container, categories) {
     if (typeof container === 'string') {
         container = document.getElementById(container);

@@ -1,3 +1,7 @@
+import { getLinks } from './storage.js';
+import { getThemeMode, applyTheme, watchSystemThemeChanges } from './theme.js';
+import { renderLinksInto } from './render.js';
+
 let links = [];
 let stopThemeWatcher = () => {};
 
