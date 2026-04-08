@@ -196,7 +196,7 @@ export function createCategoryElement(category = {}) {
         }
     });
 
-    [title, /* icon select handled below */, color].forEach((inp) => inp.addEventListener('input', () => { if (typeof updatePreviewRef === 'function') updatePreviewRef(); }));
+    [title, color].forEach((inp) => inp.addEventListener('input', () => { if (typeof updatePreviewRef === 'function') updatePreviewRef(); }));
     if (icon && icon.addEventListener) icon.addEventListener('change', () => { if (typeof updatePreviewRef === 'function') updatePreviewRef(); });
 
     up.addEventListener('click', () => {

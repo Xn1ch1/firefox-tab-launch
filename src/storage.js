@@ -1,5 +1,3 @@
-// Storage and validation utilities
-
 function validateLinksJSON(jsonString) {
     try {
         const data = JSON.parse(jsonString);

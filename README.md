@@ -109,7 +109,9 @@ tablaunch-ff-addon/
 ├── new-tab.html          # New tab page
 ├── settings.html         # Settings page
 ├── styles/common.css     # Shared styles for addon pages
-├── src/utils.js          # Shared utilities (validation, storage)
+├── src/storage.js        # Validation and storage helpers
+├── src/theme.js          # Theme helpers and persistence
+├── src/render.js         # Rendering helpers used by pages
 └── README.md             # This file
 ```
 
@@ -153,7 +155,7 @@ To modify the addon:
 ### Adding new features
 
 - Core UI logic is in `new-tab.html` and `settings.html`
-- Shared logic (validation, storage) is in `utils.js`
+-- Shared logic (validation, storage) is in `src/storage.js` (other helpers are in `src/theme.js` and `src/render.js`)
 - Follow the existing code style for consistency
 
 ## License

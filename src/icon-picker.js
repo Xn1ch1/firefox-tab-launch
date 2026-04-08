@@ -1,21 +1,15 @@
-// Icon picker component (material symbols)
-
-const ICON_OPTIONS = [
-    'folder','open_in_new','mail','calendar_month','code','help','language','chat','forum','newspaper','play_circle','book','school','task_alt','database','description',
-    'home','search','settings','favorite','star','link','visibility','visibility_off','account_circle','person','people','shopping_cart','calendar_today','event','info','warning','error','check_circle','close','logout','login','cloud','cloud_upload','cloud_download','download','upload','save','edit','delete','add','remove','share','more_vert','more_horiz','menu','arrow_back','arrow_forward','refresh','loop','build','developer_mode','bug_report','fingerprint','lock','lock_open','security','language','public','translate','phone','email','chat_bubble','comment','videocam','camera_alt','play_arrow','pause','stop','volume_up','volume_off','mic','mic_off','map','place','location_on','directions','navigation','train','flight','hotel','directions_car','directions_bike','directions_walk','bicycle','fitness_center','spa','palette','brush','image','photo','brightness_4','brightness_7','contrast','toggle_on','toggle_off','battery_full','battery_std','battery_charging_full','wifi','signal_wifi_4_bar','list','view_list','grid_view','apps','dashboard','timeline','schedule','alarm','timer','stopwatch','access_time','payment','attach_money','shopping_bag','local_offer','local_grocery_store','restaurant','local_cafe'
-];
+const ICON_OPTIONS = [];
 
 let FULL_ICON_OPTIONS = null;
 
 async function loadFullMaterialIcons() {
     if (FULL_ICON_OPTIONS) return FULL_ICON_OPTIONS;
     try {
-        const url = 'https://raw.githubusercontent.com/google/material-design-icons/master/iconfont/codepoints';
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`Failed to fetch icons: ${res.status}`);
-        const txt = await res.text();
-        const names = txt.split(/\r?\n/).map(line => line.split(/\s+/)[0]).filter(Boolean);
-        const set = new Set(ICON_OPTIONS.concat(names));
+        // Load bundled icon index (local JSON) to avoid runtime network fetches.
+        const res = await fetch(new URL('./icon-index.json', import.meta.url).href);
+        if (!res.ok) throw new Error(`Failed to load bundled icon index: ${res.status}`);
+        const names = await res.json();
+        const set = new Set(ICON_OPTIONS.concat(names || []));
         FULL_ICON_OPTIONS = Array.from(set);
         return FULL_ICON_OPTIONS;
     } catch (err) {
@@ -122,6 +116,17 @@ function createIconPicker(selected = '', isCategory = false) {
     panel.appendChild(list);
     wrapper.appendChild(panel);
 
+    // Optional load-full control for users who want the complete icon list
+    const loadFullWrap = document.createElement('div');
+    loadFullWrap.className = 'icon-load-full-wrap';
+    loadFullWrap.style.display = 'none';
+    const loadFullBtn = document.createElement('button');
+    loadFullBtn.type = 'button';
+    loadFullBtn.className = 'icon-load-full-btn';
+    loadFullBtn.textContent = 'Load full icon list';
+    loadFullWrap.appendChild(loadFullBtn);
+    panel.appendChild(loadFullWrap);
+
     function openPanel() {
         if (!document.body.contains(panel)) {
             document.body.appendChild(panel);
@@ -168,6 +173,7 @@ function createIconPicker(selected = '', isCategory = false) {
             panel.appendChild(loading);
             ensureFullList().then(() => {
                 loading.remove();
+                loadFullWrap.style.display = 'none';
             }).catch(() => loading.remove());
         }
     }
@@ -197,6 +203,33 @@ function createIconPicker(selected = '', isCategory = false) {
         Array.from(list.children).forEach((btn) => {
             const val = ((btn.dataset.value || '') + ' ' + (btn.textContent || '')).toLowerCase();
             btn.style.display = (!q || val.includes(q)) ? '' : 'none';
+        });
+
+        // If the user searched and there are no visible matches, try loading the
+        // full icon index (lazy fetch). This gives a way to surface more icons
+        // without forcing the fetch on every open.
+        const visible = Array.from(list.children).filter((c) => c.style.display !== 'none');
+        if (visible.length === 0 && !FULL_ICON_OPTIONS) {
+            // show a load button to avoid surprising network activity
+            loadFullWrap.style.display = '';
+        }
+    });
+
+    // Click handler for the explicit "Load full icon list" button
+    loadFullBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        loadFullBtn.disabled = true;
+        const loading = document.createElement('div');
+        loading.className = 'icon-loading';
+        loading.textContent = 'Loading icons...';
+        panel.appendChild(loading);
+        ensureFullList().then(() => {
+            loading.remove();
+            loadFullWrap.style.display = 'none';
+            loadFullBtn.disabled = false;
+        }).catch(() => {
+            loading.remove();
+            loadFullBtn.disabled = false;
         });
     });
 

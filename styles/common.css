@@ -63,46 +63,48 @@ body.tablaunch-newtab::before {
     content: "";
     position: fixed;
     width: 560px;
+}
 
-        body[data-theme='light'] {
-            --bg: #f3f5fb;
-            --shape-1: #e5e8f5;
-            --shape-2: #dce1f2;
-            --shape-3: #cfd7f0;
-            --surface: #ffffff;
-            --surface-hover: #f3f6ff;
-            --surface-strong: #eaf0ff;
-            --text: #1f2433;
-            --muted: #5d657d;
-            --primary: #6355d8;
-            --border: rgba(35, 40, 57, 0.14);
-            --success: #1f8a6f;
-            --error: #c84141;
-            --grid-line-1: rgba(31, 36, 51, 0.05);
-            --grid-line-2: rgba(31, 36, 51, 0.04);
-        }
+body[data-theme='light'] {
+    --bg: #f3f5fb;
+    --shape-1: #e5e8f5;
+    --shape-2: #dce1f2;
+    --shape-3: #cfd7f0;
+    --surface: #ffffff;
+    --surface-hover: #f3f6ff;
+    --surface-strong: #eaf0ff;
+    --text: #1f2433;
+    --muted: #5d657d;
+    --primary: #6355d8;
+    --border: rgba(35, 40, 57, 0.14);
+    --success: #1f8a6f;
+    --error: #c84141;
+    --grid-line-1: rgba(31, 36, 51, 0.05);
+    --grid-line-2: rgba(31, 36, 51, 0.04);
+}
 
-        * {
-            box-sizing: border-box;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        body {
-            margin: 0;
-            min-height: 100vh;
-            font-family: "Roboto", "Segoe UI", Arial, sans-serif;
-            background-color: var(--bg);
-            background-image: linear-gradient(var(--grid-line-1) 1px, transparent 1px),
-            linear-gradient(90deg, var(--grid-line-2) 1px, transparent 1px);
-            background-size: 32px 32px;
-            color: var(--text);
-        }
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Roboto", "Segoe UI", Arial, sans-serif;
+    background-color: var(--bg);
+    background-image: linear-gradient(var(--grid-line-1) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line-2) 1px, transparent 1px);
+    background-size: 32px 32px;
+    color: var(--text);
+}
 
-        .material-symbols-outlined {
-            font-variation-settings: "FILL" 0,
-            "wght" 400,
-            "GRAD" 0,
-            "opsz" 24;
-        }
+.material-symbols-outlined {
+    font-variation-settings: "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
 .tablaunch-newtab .hero h1 {
     margin: 0;
     font-size: 1.6rem;
@@ -281,30 +283,6 @@ body.tablaunch-newtab::before {
     margin-top: 1px;
     border-left: 3px solid var(--accent-color);
     padding-left: 12px;
-}
-
-.material-symbols-outlined {
-    font-variation-settings: "FILL" 0,
-    "wght" 400,
-    "GRAD" 0,
-    "opsz" 24;
-}
-/* Local font-face fallback: if you bundle Material Symbols Outlined
-   into icons/fonts/material-symbols-outlined.woff2 this @font-face will
-   make the picker and pages render icons reliably without external
-   network requests. To populate the font file, run the curl commands
-   provided in README or the developer instructions. */
-@font-face {
-    font-family: 'Material Symbols Outlined Local';
-    src: url('../icons/fonts/material-symbols-outlined.ttf') format('truetype');
-    font-weight: 100 700;
-    font-style: normal;
-    font-display: swap;
-}
-
-.material-symbols-outlined {
-    /* Prefer the local bundled font when available */
-    font-family: 'Material Symbols Outlined Local', 'Material Symbols Outlined', sans-serif;
 }
 
 .tablaunch-newtab .link-description {

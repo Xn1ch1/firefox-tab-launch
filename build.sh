@@ -16,46 +16,53 @@ echo "📦 Building TabLaunch Firefox Addon v$VERSION..."
 echo "→ Output: $OUTPUT_FILE"
 echo ""
 
-# Verify required files
-echo "✓ Checking required files..."
-required_files=(
+# Verify required files and directories
+echo "✓ Checking required files and directories..."
+required_items=(
     "manifest.json"
     "new-tab.html"
     "settings.html"
-    "src/new-tab-script.js"
-    "src/settings-script.js"
-    "src/utils.js"
-    "styles/common.css"
-    "styles/new-tab.css"
-    "styles/settings.css"
+    "src"
+    "icons"
+    "styles"
 )
 
-for file in "${required_files[@]}"; do
-    if [[ ! -f "$file" ]]; then
-        echo "❌ Error: Required file missing: $file"
+for item in "${required_items[@]}"; do
+    if [[ ! -e "$item" ]]; then
+        echo "❌ Error: Required item missing: $item"
         exit 1
     fi
 done
 
-echo "✓ All required files present"
+# Ensure directories are non-empty
+for dir in src icons styles; do
+    if [[ ! -d "$dir" ]]; then
+        echo "❌ Error: Required directory missing: $dir"
+        exit 1
+    fi
+    if [[ -z "$(ls -A "$dir")" ]]; then
+        echo "❌ Error: Required directory is empty: $dir"
+        exit 1
+    fi
+done
+
+echo "✓ All required items present"
 echo ""
 
-# Copy core files
+# Copy core files and entire directories
 echo "✓ Copying addon files..."
 cp manifest.json "$TEMP_DIR/"
 cp new-tab.html "$TEMP_DIR/"
-    mkdir -p "$TEMP_DIR/src"
-    cp src/new-tab-script.js "$TEMP_DIR/src/"
 cp settings.html "$TEMP_DIR/"
-    cp src/settings-script.js "$TEMP_DIR/src/"
-    cp src/utils.js "$TEMP_DIR/src/"
-mkdir -p "$TEMP_DIR/styles"
-cp styles/*.css "$TEMP_DIR/styles/"
+
+# Copy entire src, icons, and styles directories to include all files
+cp -r src "$TEMP_DIR/"
+cp -r icons "$TEMP_DIR/"
+cp -r styles "$TEMP_DIR/"
 
 # Copy icons
-echo "✓ Copying icons..."
-mkdir -p "$TEMP_DIR/icons"
-cp icons/*.svg "$TEMP_DIR/icons/"
+# Icons already copied with cp -r above
+echo "✓ Icons copied"
 
 echo "✓ Creating XPI archive..."
 mkdir -p "$ORIGINAL_DIR/$OUTPUT_DIR"
