@@ -89,7 +89,6 @@ function renderLinks(categories, query) {
         return;
     }
 
-    // Use shared renderer so preview and new tab look identical
     renderLinksInto(categoryList, filteredCategories);
 
     const trimmedQuery = (query || '').trim();
@@ -208,22 +207,17 @@ async function initializePage() {
     // focused before forcing input focus. Use a small timeout as a fallback.
     try {
         if (document.hasFocus && !document.hasFocus()) {
-            // Wait for the window to gain focus (user clicked the tab) then focus input
             window.addEventListener('focus', function onWinFocus() {
                 searchInput.focus();
-                // select contents for quick typing
                 try { searchInput.select(); } catch (e) { /* ignore */ }
             }, {once: true});
-            // Also set a short timeout in case the focus event doesn't fire
             setTimeout(() => {
                 try { searchInput.focus(); searchInput.select(); } catch (e) {}
             }, 100);
         } else {
-            // Window already focused — focus immediately (with tiny delay to ensure rendering)
             setTimeout(() => { try { searchInput.focus(); searchInput.select(); } catch (e) {} }, 10);
         }
     } catch (err) {
-        // fallback to immediate focus if anything goes wrong
         try { searchInput.focus(); searchInput.select(); } catch (e) {}
     }
 }

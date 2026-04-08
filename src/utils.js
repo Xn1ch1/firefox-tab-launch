@@ -72,7 +72,6 @@ async function saveLinks(jsonString) {
             lastUpdated: new Date().toISOString()
         };
 
-        // Try sync storage first, fall back to local
         try {
             await browser.storage.sync.set(storageData);
             console.log('Successfully saved to sync storage');
@@ -93,7 +92,6 @@ async function getLinks() {
     try {
         let result;
 
-        // Try sync storage first, fall back to local
         try {
             result = await browser.storage.sync.get('linksJSON');
         } catch (syncError) {
@@ -118,7 +116,6 @@ async function getLinksJSON() {
     try {
         let result;
 
-        // Try sync storage first, fall back to local
         try {
             result = await browser.storage.sync.get('linksJSON');
         } catch (syncError) {
