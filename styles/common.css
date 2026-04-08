@@ -289,6 +289,23 @@ body.tablaunch-newtab::before {
     "GRAD" 0,
     "opsz" 24;
 }
+/* Local font-face fallback: if you bundle Material Symbols Outlined
+   into icons/fonts/material-symbols-outlined.woff2 this @font-face will
+   make the picker and pages render icons reliably without external
+   network requests. To populate the font file, run the curl commands
+   provided in README or the developer instructions. */
+@font-face {
+    font-family: 'Material Symbols Outlined Local';
+    src: url('../icons/fonts/material-symbols-outlined.ttf') format('truetype');
+    font-weight: 100 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+.material-symbols-outlined {
+    /* Prefer the local bundled font when available */
+    font-family: 'Material Symbols Outlined Local', 'Material Symbols Outlined', sans-serif;
+}
 
 .tablaunch-newtab .link-description {
     display: block;
