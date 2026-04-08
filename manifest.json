@@ -1,0 +1,30 @@
+{
+  "manifest_version": 2,
+  "name": "TabLaunch",
+  "version": "1.0.0",
+  "description": "Replace Firefox's new tab with a fast, private dashboard of your favorite sites. TabLaunch uses a JSON-configurable settings page to define categorized links, supports search and keyboard navigation, and honors system theme preferences. No external data is collected.",
+  "permissions": [
+    "storage"
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "tablaunch@example.com",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ],
+        "optional": []
+      }
+    }
+  },
+  "chrome_url_overrides": {
+    "newtab": "new-tab.html"
+  },
+  "options_page": "settings.html",
+  "icons": {
+    "16": "icons/icon-16.svg",
+    "48": "icons/icon-48.svg",
+    "96": "icons/icon-96.svg"
+  }
+}
+

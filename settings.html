@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+    <title>TabLaunch Settings</title>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0">
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/settings.css">
+</head>
+<body class="tablaunch-settings">
+    <div class="container">
+        <h1>TabLaunch Settings</h1>
+
+        <div id="status-alert" class="alert"></div>
+
+        <div class="section">
+            <h2>Configure Your Links</h2>
+            <p style="color: var(--muted); margin: 0 0 16px;">
+                Paste your JSON configuration below. The format should be an array of categories with links.
+            </p>
+
+                    <div class="view-toggle">
+                        <button id="toggle-builder" type="button" class="btn-toggle">Builder</button>
+                        <button id="toggle-json" type="button" class="btn-toggle active">JSON</button>
+                    </div>
+
+                    <form id="settings-form">
+                <div class="form-group">
+                    <label for="theme-mode">Theme:</label>
+                    <select id="theme-mode" name="theme-mode">
+                        <option value="auto">Auto (follow system)</option>
+                        <option value="dark">Dark</option>
+                        <option value="light">Light</option>
+                    </select>
+                    <div class="info-text">Auto uses your system appearance preference.</div>
+                </div>
+
+                <div id="builder-container" class="form-group" style="display: none;">
+                    <label>Links Builder</label>
+                    <div id="builder-controls" class="info-text" style="margin-bottom:8px;">
+                        <button type="button" id="add-category-btn" class="btn">Add category</button>
+                        <button type="button" id="restore-storage-btn" class="btn">Restore from storage</button>
+                        <button type="button" id="export-json-btn" class="btn">Copy JSON</button>
+                    </div>
+                    <div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap;">
+                        <div style="flex:1 1 480px; min-width:320px;">
+                            <div id="categories-list"></div>
+                        </div>
+                    </div>
+                    <div class="info-text" style="margin-top:8px;">Use the builder to add, edit and reorder categories and links. Changes are synchronized to the JSON editor when switching to JSON view.</div>
+                </div>
+
+                <div id="json-container" class="form-group">
+                    <label for="json-input">Links JSON:</label>
+                    <textarea id="json-input" name="json-input" spellcheck="false"
+                              placeholder='[{"title": "Category", "icon": "folder", "links": [...]}]'></textarea>
+                    <div class="info-text">
+                        Each category must have a <span class="code-inline">title</span>, optional <span class="code-inline">icon</span> and <span class="code-inline">color</span>, and an array of <span class="code-inline">links</span>.
+                        Each link must have a <span class="code-inline">title</span>, <span class="code-inline">url</span>, and optional <span class="code-inline">description</span> and <span class="code-inline">icon</span>.
+                    </div>
+                </div>
+
+                <div id="icon-help" class="help-box">
+                    <strong>Icon names:</strong> Use Material Symbols (e.g., <span class="code-inline">dns</span>, <span class="code-inline">database</span>, <span class="code-inline">folder</span>, <span class="code-inline">language</span>). See <a href="https://fonts.google.com/icons" target="_blank" style="color: var(--primary);">Material Icons</a>.
+                </div>
+
+                <div class="button-group">
+                    <button type="button" id="open-preview-btn" class="btn">Open preview</button>
+                    <button type="submit" class="btn-save">Save Configuration</button>
+                    <button type="button" class="btn-example" id="load-example-btn">Load Example</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Preview modal -->
+    <div id="preview-modal" class="modal" style="display:none;">
+        <div class="modal-backdrop" id="preview-modal-backdrop"></div>
+        <div class="modal-panel" role="dialog" aria-modal="true" aria-label="Preview">
+            <div class="modal-header">
+                <h3 style="margin:0;">Live Preview</h3>
+                <button id="preview-close-btn" class="btn" aria-label="Close preview">Close</button>
+            </div>
+            <div id="preview-modal-area" class="preview-area" style="margin-top:12px; border:1px solid var(--border); border-radius:6px; padding:12px; background:var(--surface); min-height:200px; max-height:70vh; overflow:auto;"></div>
+        </div>
+    </div>
+
+    <script src="src/utils.js"></script>
+    <script src="src/settings-script.js"></script>
+</body>
+</html>
+

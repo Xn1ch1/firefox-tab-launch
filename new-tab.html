@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>TabLaunch</title>
+        <link rel="stylesheet"
+              href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0">
+        <link rel="stylesheet" href="styles/common.css">
+        <link rel="stylesheet" href="styles/new-tab.css">
+    </head>
+    <body class="tablaunch-newtab">
+        <main>
+            <header class="hero">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div>
+                        <h1>TabLaunch</h1>
+                        <p id="subtitle" style="display: none;">No links configured yet. <a href="#" id="goto-settings" style="color: var(--primary); text-decoration: none;">Open settings</a> to add links.</p>
+                    </div>
+                    <a href="#" id="settings-button" class="settings-link" title="Open Settings">
+                        <span class="material-symbols-outlined">settings</span>
+                    </a>
+                </div>
+                <label class="search-wrap" for="search-input">
+                    <span class="material-symbols-outlined" aria-hidden="true">search</span>
+                    <input id="search-input" type="search" placeholder="Search links, descriptions, categories..."
+                           autocomplete="off">
+                </label>
+                <p class="search-help"><span class="code">/</span> focus, <span class="code">Esc</span> clear, <span class="code">↑↓</span> navigate, <span class="code">Enter</span> open</p>
+            </header>
+            <section id="category-list" aria-label="Link categories"></section>
+        </main>
+
+        <script src="src/utils.js"></script>
+        <script src="src/new-tab-script.js"></script>
+    </body>
+</html>
+
