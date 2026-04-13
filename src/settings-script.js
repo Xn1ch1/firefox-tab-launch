@@ -1,4 +1,4 @@
-import { getLinksJSON, saveLinks, getDefaultLinksExample } from './storage.js';
+import { getLinksJSON, saveLinks, getDefaultLinksExample, getShowUrls, saveShowUrls } from './storage.js';
 import { getThemeMode, applyTheme, watchSystemThemeChanges, saveThemeMode } from './theme.js';
 import { renderLinksInto } from './render.js';
 import * as builder from './builder.js';
@@ -21,6 +21,7 @@ const previewModalArea = document.getElementById('preview-modal-area');
 const openPreviewBtn = document.getElementById('open-preview-btn');
 const previewCloseBtn = document.getElementById('preview-close-btn');
 const iconHelpBox = document.getElementById('icon-help');
+const showUrlsCheckbox = document.getElementById('show-urls');
 
 let stopThemeWatcher = () => {};
 let currentView = 'json'; // 'json' or 'builder'
@@ -54,7 +55,7 @@ const updatePreviewFromBuilder = debounce(() => {
     try {
         const data = builder.getBuilderData();
         if (previewModalArea) {
-            renderLinksInto(previewModalArea, data);
+            renderLinksInto(previewModalArea, data, { showUrls: showUrlsCheckbox ? showUrlsCheckbox.checked : false });
         }
     } catch (err) {
         console.error('Preview update failed:', err);
@@ -94,9 +95,14 @@ builder.init({categoriesList, updatePreview: updatePreviewFromBuilder});
 async function loadSettings() {
     const json = await getLinksJSON();
     const themeMode = await getThemeMode();
+    const showUrls = await getShowUrls();
 
     applySelectedTheme(themeMode);
     themeModeSelect.value = themeMode;
+
+    if (showUrlsCheckbox) {
+        showUrlsCheckbox.checked = showUrls;
+    }
 
     if (json) {
         jsonInput.value = formatJSON(json);
@@ -235,6 +241,18 @@ themeModeSelect.addEventListener('change', async (event) => {
         showAlert(`Failed to save theme: ${result.error}`, 'error');
     }
 });
+
+if (showUrlsCheckbox) {
+    showUrlsCheckbox.addEventListener('change', async () => {
+        const result = await saveShowUrls(showUrlsCheckbox.checked);
+        if (result.valid) {
+            showAlert('Setting saved', 'success');
+        } else {
+            showAlert(`Failed to save setting: ${result.error}`, 'error');
+        }
+        updatePreviewFromBuilder();
+    });
+}
 
 loadSettings();
 

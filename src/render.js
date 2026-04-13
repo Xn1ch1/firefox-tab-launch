@@ -1,4 +1,4 @@
-function renderLinksInto(container, categories) {
+function renderLinksInto(container, categories, options = {}) {
     if (typeof container === 'string') {
         container = document.getElementById(container);
     }
@@ -56,6 +56,13 @@ function renderLinksInto(container, categories) {
             title.className = 'link-title';
             title.textContent = item.title;
             content.appendChild(title);
+
+            if (options.showUrls && item.url) {
+                const urlSpan = document.createElement('span');
+                urlSpan.className = 'link-url';
+                urlSpan.textContent = item.url;
+                content.appendChild(urlSpan);
+            }
 
             if (item.description) {
                 const description = document.createElement('span');

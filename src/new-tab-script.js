@@ -1,11 +1,13 @@
-import { getLinks } from './storage.js';
+import { getLinks, getShowUrls } from './storage.js';
 import { getThemeMode, applyTheme, watchSystemThemeChanges } from './theme.js';
 import { renderLinksInto } from './render.js';
 
 let links = [];
+let showUrls = false;
 let stopThemeWatcher = () => {};
 
 async function loadLinks() {
+    showUrls = await getShowUrls();
     const storedLinks = await getLinks();
     if (storedLinks) {
         links = storedLinks;
@@ -93,7 +95,7 @@ function renderLinks(categories, query) {
         return;
     }
 
-    renderLinksInto(categoryList, filteredCategories);
+    renderLinksInto(categoryList, filteredCategories, { showUrls });
 
     const trimmedQuery = (query || '').trim();
     if (trimmedQuery) {

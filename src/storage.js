@@ -235,5 +235,40 @@ function getDefaultLinksExample() {
     ], null, 2);
 }
 
-export { validateLinksJSON, saveLinks, getLinks, getLinksJSON, getDefaultLinksExample };
+async function saveShowUrls(value) {
+    const normalized = value ? true : false;
+    try {
+        try {
+            await browser.storage.sync.set({ showUrls: normalized });
+        } catch (syncError) {
+            console.warn('Sync storage write failed for showUrls, falling back to local:', syncError);
+            await browser.storage.local.set({ showUrls: normalized });
+        }
+        return { valid: true };
+    } catch (error) {
+        console.error('Failed to save showUrls:', error);
+        return { valid: false, error: error.message };
+    }
+}
+
+async function getShowUrls() {
+    try {
+        let result;
+        try {
+            result = await browser.storage.sync.get('showUrls');
+            if (typeof result.showUrls === 'undefined') {
+                result = await browser.storage.local.get('showUrls');
+            }
+        } catch (syncError) {
+            console.warn('Sync storage read failed for showUrls, trying local:', syncError);
+            result = await browser.storage.local.get('showUrls');
+        }
+        return result.showUrls === true;
+    } catch (error) {
+        console.error('Failed to retrieve showUrls:', error);
+        return false;
+    }
+}
+
+export { validateLinksJSON, saveLinks, getLinks, getLinksJSON, getDefaultLinksExample, saveShowUrls, getShowUrls };
 
